@@ -1,10 +1,8 @@
-.. raw:: html
+<div align="center">
+  <h1><code>ghs</code></h1>
 
-  <div align="center">
-    <h1><code>ghs</code></h1>
-
-    <strong>GitHub Scripts</strong>
-  </div>
+  <strong>GitHub Scripts</strong>
+</div>
 
 ## Overview
 
