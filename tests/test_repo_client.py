@@ -15,7 +15,7 @@ async def test_org_repos(respx_mock, repos_data) -> None:
             return_value=Response(200, json=repos_data)
         )
         response = await org_repos(org)
-        assert len(response) == 1
+        assert len(response) == len(repos_data)
 
 
 async def test_org_repos_by_attr(respx_mock, repos_data) -> None:
@@ -25,8 +25,8 @@ async def test_org_repos_by_attr(respx_mock, repos_data) -> None:
             return_value=Response(200, json=repos_data)
         )
         response = await org_repos_by_attr(org, "name")
-        assert len(response) == 1
-        assert response[0] == repos_data[0]["name"]
+        names = [repo.get("name") for repo in repos_data]
+        assert response == names
 
 
 async def test_org_repos_by_attr_included_repos(respx_mock, repos_data) -> None:
