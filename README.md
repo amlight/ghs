@@ -12,3 +12,7 @@ This repository contains a CLI application `ghs` (GitHub Scripts), that you can 
 - Manage GitHub label creation of an organization and its repositories
 - Filter issues and pull requests of repositories given a label and available states such as open/closed
 - Standardize certain labels that our team should typically use to facilitate scope planning and prioritization
+
+## GitHub Labels
+
+This [labels.md document](./docs/labels.md) provides information about how labels are being used for overall organization, planning, version releases and prioritization.
