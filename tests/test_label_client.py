@@ -8,6 +8,7 @@ from httpx import Response
 from ghs.base import base_url
 from ghs.label_client import (
     org_repos_labels,
+    org_repos_labels_create,
     org_repos_labels_delete,
     org_repos_priority_labels_create,
     repo_label_create,
@@ -93,7 +94,7 @@ async def test_repo_label_create(respx_mock, repo_labels_data) -> None:
             return_value=Response(200, json=repo_labels_data[0])
         )
         response = await repo_label_create(owner, repo, label, description)
-        assert response == (200, repo_labels_data[0])
+        assert response == {"status_code": 200, "response": repo_labels_data[0]}
 
 
 async def test_repo_priority_labels_create(respx_mock, repo_labels_data) -> None:
@@ -183,4 +184,24 @@ async def test_org_repos_priority_labels_create(
             )
 
         response = await org_repos_priority_labels_create(org)
+        assert repos == list(response.keys())
+
+
+async def test_org_repos_labels_create(
+    respx_mock, repo_labels_data, repos_data
+) -> None:
+    with respx.mock(base_url=base_url()) as respx_mock:
+        org = "kytos-ng"
+        respx_mock.get(f"/orgs/{org}/repos").mock(
+            return_value=Response(200, json=repos_data)
+        )
+
+        repos = [repo.get("name") for repo in repos_data]
+        for repo in repos:
+            respx_mock.post(f"/repos/{org}/{repo}/labels").mock(
+                return_value=Response(200, json=repo_labels_data[0])
+            )
+
+        name = repo_labels_data[0]["name"]
+        response = await org_repos_labels_create(org, name)
         assert repos == list(response.keys())

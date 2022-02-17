@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import httpx
 
@@ -53,20 +53,20 @@ async def repo_label_create(
     owner: str,
     repo: str,
     name: str,
-    color: Optional[str] = None,
     description: Optional[str] = None,
-) -> Tuple[int, dict]:
+    color: Optional[str] = None,
+) -> Dict[str, Any]:
     """Create a label."""
     async with httpx.AsyncClient() as client:
         url = f"{base_url()}/repos/{owner}/{repo}/labels"
-        body = {"name": name}
+        body = {"name": str(name)}
         if color:
             body["color"] = color
         if description:
             body["description"] = description
 
         r = await client.post(url, headers=headers(), json=body)
-        return (r.status_code, r.json())
+        return {"status_code": r.status_code, "response": r.json()}
 
 
 async def repo_priority_labels_create(
@@ -92,8 +92,8 @@ async def repo_priority_labels_create(
             owner,
             repo,
             label,
-            priority_labels[label]["color"],
             priority_labels[label]["description"],
+            priority_labels[label]["color"],
         )
         for label in priority_labels
         if label not in labels
@@ -121,6 +121,22 @@ async def org_repos_labels_delete(
     """Delete labels of an org."""
     repos = await org_repos_by_attr(org, "name", included_repos)
     coros = [repo_labels_delete(org, repo, included_labels) for repo in repos]
+    results = await asyncio.gather(*coros)
+    return {repo: result for repo, result in zip(repos, results)}
+
+
+async def org_repos_labels_create(
+    org: str,
+    name: str,
+    description: Optional[str] = None,
+    color: Optional[str] = None,
+    included_repos: Optional[List[str]] = None,
+) -> dict:
+    """Create labels in an org."""
+    repos = await org_repos_by_attr(org, "name", included_repos)
+    coros = [
+        repo_label_create(org, repo, str(name), description, color) for repo in repos
+    ]
     results = await asyncio.gather(*coros)
     return {repo: result for repo, result in zip(repos, results)}
 

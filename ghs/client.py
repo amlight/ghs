@@ -3,6 +3,7 @@
 
 from .label_client import (
     org_repos_labels,
+    org_repos_labels_create,
     org_repos_labels_delete,
     org_repos_priority_labels_create,
     repo_label_create,
