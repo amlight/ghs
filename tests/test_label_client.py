@@ -97,7 +97,7 @@ async def test_repo_label_create(respx_mock, repo_labels_data) -> None:
         assert response == {"status_code": 200, "response": repo_labels_data[0]}
 
 
-async def test_repo_priority_labels_create(respx_mock, repo_labels_data) -> None:
+async def test_repo_default_labels_create(respx_mock, repo_labels_data) -> None:
     with respx.mock(base_url=base_url()) as respx_mock:
         owner = "kytos-ng"
         repo = "flow_manager"
@@ -167,7 +167,7 @@ async def test_org_repos_labels_delete(
         assert repos == list(response.keys())
 
 
-async def test_org_repos_priority_labels_create(
+async def test_org_repos_default_labels_create(
     respx_mock, repo_labels_data, repos_data
 ) -> None:
     with respx.mock(base_url=base_url()) as respx_mock:

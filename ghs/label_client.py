@@ -69,11 +69,11 @@ async def repo_label_create(
         return {"status_code": r.status_code, "response": r.json()}
 
 
-async def repo_priority_labels_create(
+async def repo_default_labels_create(
     owner: str,
     repo: str,
 ) -> List[dict]:
-    """Create priority labels."""
+    """Create default labels."""
     priority_labels = {
         "priority_critical": {"color": "B60205", "description": "Critical priority"},
         "priority_major": {"color": "D93F0B", "description": "Major priority"},
@@ -143,13 +143,13 @@ async def org_repos_labels_create(
     return {repo: result for repo, result in zip(repos, results)}
 
 
-async def org_repos_priority_labels_create(
+async def org_repos_default_labels_create(
     org: str,
     included_labels: Optional[List[str]] = None,
     included_repos: Optional[List[str]] = None,
 ) -> dict:
     """Create priority labels for all repos."""
     repos = await org_repos_by_attr(org, "name", included_repos)
-    coros = [repo_priority_labels_create(org, repo) for repo in repos]
+    coros = [repo_default_labels_create(org, repo) for repo in repos]
     results = await asyncio.gather(*coros)
     return {repo: result for repo, result in zip(repos, results)}
