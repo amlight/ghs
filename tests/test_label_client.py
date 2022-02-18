@@ -110,6 +110,8 @@ async def test_repo_priority_labels_create(respx_mock, repo_labels_data) -> None
             "priority_major": {"color": "D93F0B", "description": "Major priority"},
             "priority_medium": {"color": "FEF2C0", "description": "Medium priority"},
             "priority_low": {"color": "BFDADC", "description": "Low priority"},
+            "in_progress": {"color": "C2E0C6", "description": "In progress"},
+            "blocked": {"color": "B60205", "description": "Blocked"},
             "future_release": {
                 "color": "1D76DB",
                 "description": "Planned for the next release",
