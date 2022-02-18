@@ -36,7 +36,7 @@ A label `epic_[.*]` can also be used to represent an epic, which represents an o
 
 A label `in_progress` should be added when a developer starts to work on an issue or feature, and when its gets closed the label should be removed. This workflow ideally should be automated by GitHub actions, whenever a PR closes an associated issue then the `in_progress` label should be removed.
 
-Also, we will use one GitHub Kanban board for epics that are planned for the current year to provide a high level view of the progress of the current version and what is being planned for the current year. Every card on this board will move in the board as progress is made, and on each card there will be links for the filters to find out more information about the features and issues associated with that epic. In the long term, we might also add some automation to add cards in the board as new epics are associated with a version.
+Also, one GitHub Kanban board with epics that are planned for the current year will be used to provide a high level view of the progress. Every card on this board will move in the board as progress is made, and on each card there will be links for the filters to find out more information about the features and issues associated with an epic. In the long term, automation might be added to facilitate adding cards.
 
 #### `blocked`
 
@@ -69,5 +69,5 @@ You can adapt any of these filters directly on the GitHub Search webpage in left
 
 ### References
 
-`[1]` GitHub Search. https://github.com/search.
-`[2]` GitHub Searching issues and PRs. https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
+- `[1]` GitHub Search. https://github.com/search.
+- `[2]` GitHub Searching issues and PRs. https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
