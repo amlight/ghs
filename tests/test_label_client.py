@@ -7,16 +7,16 @@ from httpx import Response
 
 from ghs.base import base_url
 from ghs.label_client import (
+    org_repos_default_labels_create,
     org_repos_labels,
     org_repos_labels_create,
     org_repos_labels_delete,
-    org_repos_priority_labels_create,
+    repo_default_labels_create,
     repo_label_create,
     repo_label_delete,
     repo_labels,
     repo_labels_by_attr,
     repo_labels_delete,
-    repo_priority_labels_create,
 )
 
 
@@ -102,7 +102,7 @@ async def test_repo_default_labels_create(respx_mock, repo_labels_data) -> None:
         owner = "kytos-ng"
         repo = "flow_manager"
 
-        priority_labels = {
+        default_labels = {
             "priority_critical": {
                 "color": "B60205",
                 "description": "Critical priority",
@@ -124,8 +124,8 @@ async def test_repo_default_labels_create(respx_mock, repo_labels_data) -> None:
             return_value=Response(200, json=repo_labels_data[0])
         )
 
-        response = await repo_priority_labels_create(owner, repo)
-        assert len(response) == len(priority_labels)
+        response = await repo_default_labels_create(owner, repo)
+        assert len(response) == len(default_labels)
 
 
 async def test_org_repos_labels(respx_mock, repo_labels_data, repos_data) -> None:
@@ -185,7 +185,7 @@ async def test_org_repos_default_labels_create(
                 return_value=Response(200, json=repo_labels_data[0])
             )
 
-        response = await org_repos_priority_labels_create(org)
+        response = await org_repos_default_labels_create(org)
         assert repos == list(response.keys())
 
 
