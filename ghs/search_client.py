@@ -100,7 +100,6 @@ async def search(query_expr: str) -> str:
     remaining_pages = min(
         math.ceil((int(response.get("total_count")) - len(items)) / per_page), 9
     )
-    print(remaining_pages)
     coros = [
         _search(query_expr, page=page, per_page=per_page)
         for page in range(2, 2 + remaining_pages)

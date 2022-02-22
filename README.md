@@ -91,12 +91,12 @@ ghs org_repos_labels_delete kytos-ng "['xyz']" --included_repos="['flow_manager'
 
 #### Searching
 
-The search functionality accepts and passes all parameters to [GitHub GET /search/issues](https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests), [so all upstream query parameters are supported](https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests). The main difference is that the parameter is passed with a double dash with its value `--[parameter_name] [value]`, and the issues will be listed sorted by their priority labels.
+The search functionality accepts and passes all parameters to [GitHub GET /search/issues](https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests), [so all upstream query parameters are supported](https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests). Keep in mind that GitHub search API returns at most `1000` results, so if you have a broad search expression it'll return partial results.
 
 - Search `kytos-ng` `2022.2` labelled issues:
 
 ```
-ghs search --org kytos-ng --label 2022.2 --is issue
+ghs search 'org:kytos-ng label:2022.2 is:issue'
 ```
 
 To check progress of the number of issues, the response will have a `stats` property that shows the number of open and closed issues and the progress (closed/open), so any progress that you are interested in checking you can have it when you narrow down the filter accordingly.
