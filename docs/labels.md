@@ -42,6 +42,26 @@ Also, one GitHub Kanban board with epics that are planned for the current year w
 
 If you are working on an issue or feature and you can't make progress because of an unexpected issue then the `blocked` label should be added, and it's encouraged to add comments in the issue explaining why it's blocked.
 
+#### `enhancement`
+
+The `enhancement` label should be used for new features or improvements.
+
+#### `bug`
+
+This a label is for defects and problems.
+
+#### `documentation`
+
+This label should be used for `documentation` related tasks.
+
+#### `duplicate`
+
+This is a label to mark if an issue is duplicate.
+
+#### `good first issue`
+
+The `good first issue` label is meant to be used for issues that are good for new contributors.
+
 ### GitHub Search
 
 This subsection illustrates practical queries examples using [GitHub Search `[1]`](https://github.com/search).
