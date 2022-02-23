@@ -7,6 +7,7 @@ from httpx import Response
 
 from ghs.base import base_url
 from ghs.label_client import (
+    add_labels,
     org_repos_default_labels_create,
     org_repos_labels,
     org_repos_labels_create,
@@ -207,3 +208,17 @@ async def test_org_repos_labels_create(
         name = repo_labels_data[0]["name"]
         response = await org_repos_labels_create(org, name)
         assert repos == list(response.keys())
+
+
+async def test_add_labels(respx_mock, repo_labels_data) -> None:
+    with respx.mock(base_url=base_url()) as respx_mock:
+        owner = "kytos-ng"
+        repo = "flow_manager"
+        issue_number = 10
+        respx_mock.post(f"/repos/{owner}/{repo}/issues/{issue_number}/labels").mock(
+            return_value=Response(200, json=repo_labels_data)
+        )
+        response = await add_labels(
+            owner, repo, issue_number, [label.get("name") for label in repo_labels_data]
+        )
+        assert len(repo_labels_data) == len(list(response.get("response")))

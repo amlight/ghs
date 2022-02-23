@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import httpx
 
@@ -153,3 +153,15 @@ async def org_repos_default_labels_create(
     coros = [repo_default_labels_create(org, repo) for repo in repos]
     results = await asyncio.gather(*coros)
     return {repo: result for repo, result in zip(repos, results)}
+
+
+async def add_labels(
+    owner: str, repo: str, issue_number: Union[int, str], labels: List[str]
+) -> dict:
+    """Add a list of labels on a repo."""
+    url = f"{base_url()}/repos/{owner}/{repo}/issues/{issue_number}/labels"
+    async with httpx.AsyncClient() as client:
+        r = await client.post(
+            url, headers=headers(), json=[str(label) for label in labels]
+        )
+        return {"status_code": r.status_code, "response": r.json()}

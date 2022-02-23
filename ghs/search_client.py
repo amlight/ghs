@@ -10,7 +10,7 @@ from typing import List, Optional
 import httpx
 
 from .base import base_url, headers
-from .repo_client import add_labels
+from .label_client import add_labels
 
 
 def _build_args(dict_args, kv_sep="=", arg_sep="&") -> str:
