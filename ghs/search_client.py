@@ -10,6 +10,7 @@ from typing import List, Optional
 import httpx
 
 from .base import base_url, headers
+from .repo_client import add_labels
 
 
 def _build_args(dict_args, kv_sep="=", arg_sep="&") -> str:
@@ -44,6 +45,7 @@ def _map_search_item(item: dict) -> dict:
     labels = [label.get("name") for label in item.get("labels", [])]
     priority = _find_priority(labels)
     return {
+        "number": item.get("number"),
         "title": item.get("title"),
         "html_url": item.get("html_url"),
         "state": item.get("state"),
@@ -51,6 +53,7 @@ def _map_search_item(item: dict) -> dict:
         "labels": labels,
         "created_at": item.get("created_at"),
         "closed_at": item.get("closed_at"),
+        "assignee": item.get("assignee"),
     }
 
 
@@ -108,3 +111,19 @@ async def search(query_expr: str) -> str:
         for item in response.get("items"):
             items.append(_map_search_item(item))
     return _map_search_response(items)
+
+
+async def search_issues_add_labels(query_expr: str, labels: List[str]) -> dict:
+    """Add labels to issues given a search query_expr"""
+    results = await search(query_expr)
+    results = json.loads(results)
+    coros = []
+    ids = []
+    for result in results.get("items", []):
+        number = result.get("number")
+        html_url = result.get("html_url", "").split("/")
+        owner, repo = html_url[-4], html_url[-3]
+        coros.append(add_labels(owner, repo, number, labels))
+        ids.append(result.get("html_url"))
+    results = await asyncio.gather(*coros)
+    return {key: result.get("status_code") for key, result in zip(ids, results)}

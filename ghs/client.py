@@ -13,4 +13,4 @@ from .label_client import (
     repo_labels_delete,
 )
 from .repo_client import org_repos, org_repos_by_attr
-from .search_client import search
+from .search_client import search, search_issues_add_labels

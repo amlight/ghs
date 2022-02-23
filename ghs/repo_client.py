@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 import httpx
 
@@ -26,3 +26,15 @@ async def org_repos_by_attr(
     if included_repos is not None:
         repos = [repo for repo in repos if repo in included_repos]
     return repos
+
+
+async def add_labels(
+    owner: str, repo: str, issue_number: Union[int, str], labels: List[str]
+) -> dict:
+    """Add a list of labels on a repo."""
+    url = f"{base_url()}/repos/{owner}/{repo}/issues/{issue_number}/labels"
+    async with httpx.AsyncClient() as client:
+        r = await client.post(
+            url, headers=headers(), json=[str(label) for label in labels]
+        )
+        return {"status_code": r.status_code, "response": r.json()}
