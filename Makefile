@@ -10,5 +10,5 @@ lint:
 	black --check ghs/
 	@echo "Linting with isort"
 	isort --check --profile=black ghs
-	@echo "Linting with pycodestyle"
-	pycodestyle --max-line-length=88 ghs
+	@echo "Linting with flake8"
+	flake8 --max-line-length=88 ghs
