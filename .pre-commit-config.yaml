@@ -14,3 +14,10 @@ repos:
     hooks:
     - id: isort
       args: ["--profile", "black", "--filter-files"]
+-   repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+    - id: flake8
+      args:
+        # making isort line length compatible with black
+        - "--max-line-length=88"
