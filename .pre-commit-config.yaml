@@ -1,0 +1,23 @@
+# Pre-commit git hooks, run locally before every commit
+# Init with
+# $ pip install -r requirements-dev.txt
+# $ pre-commit install
+
+repos:
+-   repo: https://github.com/ambv/black
+    rev: 22.1.0
+    hooks:
+    - id: black
+      language_version: python3
+-   repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    - id: isort
+      args: ["--profile", "black", "--filter-files"]
+-   repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+    - id: flake8
+      args:
+        # making isort line length compatible with black
+        - "--max-line-length=88"
