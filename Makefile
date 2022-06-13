@@ -1,6 +1,6 @@
 
 unittest:
-	pytest --cov=ghs tests -vv
+	python -m pytest --cov=ghs tests -vv
 
 tox:
 	tox
