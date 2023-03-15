@@ -8,6 +8,13 @@ from collections import Counter
 from typing import List, Optional
 
 import httpx
+from tenacity import (
+    AsyncRetrying,
+    RetryError,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_random,
+)
 
 from .base import base_url, headers
 from .label_client import add_labels
@@ -93,24 +100,38 @@ def _map_search_response(items: List[dict]) -> str:
     )
 
 
-async def search(query_expr: str) -> str:
+async def search(
+    query_expr: str, max_retries: int = 3, min_retry_wait: int = 65
+) -> str:
     """Search issues and PRs, the query_expr is an expression that GitHub search
     supports such as 'org:some_org label:some_label'."""
-    response = await _search(query_expr)
-    items = [_map_search_item(item) for item in response.get("items")]
-    per_page = 100
+    try:
+        async for attempt in AsyncRetrying(
+            retry=retry_if_exception_type((httpx.HTTPStatusError,)),
+            wait=wait_random(min_retry_wait, min_retry_wait + 5),
+            stop=stop_after_attempt(max_retries),
+        ):
+            with attempt:
+                response = await _search(query_expr)
+                items = [_map_search_item(item) for item in response.get("items")]
+                per_page = 100
 
-    remaining_pages = min(
-        math.ceil((int(response.get("total_count")) - len(items)) / per_page), 9
-    )
-    coros = [
-        _search(query_expr, page=page, per_page=per_page)
-        for page in range(2, 2 + remaining_pages)
-    ]
-    for response in await asyncio.gather(*coros):
-        for item in response.get("items"):
-            items.append(_map_search_item(item))
-    return _map_search_response(items)
+                remaining_pages = min(
+                    math.ceil(
+                        (int(response.get("total_count")) - len(items)) / per_page
+                    ),
+                    9,
+                )
+                coros = [
+                    _search(query_expr, page=page, per_page=per_page)
+                    for page in range(2, 2 + remaining_pages)
+                ]
+                for response in await asyncio.gather(*coros):
+                    for item in response.get("items"):
+                        items.append(_map_search_item(item))
+                return _map_search_response(items)
+    except RetryError:
+        raise
 
 
 async def search_issues_add_labels(query_expr: str, labels: List[str]) -> dict:
