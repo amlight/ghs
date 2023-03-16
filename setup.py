@@ -9,7 +9,7 @@ def read_requirements(path="requirements.txt"):
 
 setup(
     name="ghs",
-    version="1.1.0",
+    version="1.2.0",
     description="GitHub scripts",
     author="AmLight Team",
     author_email="no-reply@amlight.net",
