@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from .issue_client import org_repos_issue_create, repo_issue_create  # noqa
 from .label_client import (  # noqa
     org_repos_default_labels_create,
     org_repos_labels,
