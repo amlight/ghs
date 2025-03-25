@@ -17,7 +17,7 @@ from tenacity import (
 )
 
 from .base import base_url, headers
-from .label_client import add_labels
+from .label_client import add_labels, remove_label
 
 
 def _build_args(dict_args, kv_sep="=", arg_sep="&") -> str:
@@ -145,6 +145,22 @@ async def search_issues_add_labels(query_expr: str, labels: List[str]) -> dict:
         html_url = result.get("html_url", "").split("/")
         owner, repo = html_url[-4], html_url[-3]
         coros.append(add_labels(owner, repo, number, labels))
+        ids.append(result.get("html_url"))
+    results = await asyncio.gather(*coros)
+    return {key: result.get("status_code") for key, result in zip(ids, results)}
+
+
+async def search_issues_rm_label(query_expr: str, label: str) -> dict:
+    """Remove a label of issues given a search query_expr"""
+    results = await search(query_expr)
+    results = json.loads(results)
+    coros = []
+    ids = []
+    for result in results.get("items", []):
+        number = result.get("number")
+        html_url = result.get("html_url", "").split("/")
+        owner, repo = html_url[-4], html_url[-3]
+        coros.append(remove_label(owner, repo, number, label))
         ids.append(result.get("html_url"))
     results = await asyncio.gather(*coros)
     return {key: result.get("status_code") for key, result in zip(ids, results)}

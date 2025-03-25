@@ -14,4 +14,4 @@ from .label_client import (  # noqa
     repo_labels_delete,
 )
 from .repo_client import org_repos, org_repos_by_attr  # noqa
-from .search_client import search, search_issues_add_labels  # noqa
+from .search_client import search, search_issues_add_labels, search_issues_rm_label  # noqa

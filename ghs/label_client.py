@@ -165,3 +165,13 @@ async def add_labels(
             url, headers=headers(), json=[str(label) for label in labels]
         )
         return {"status_code": r.status_code, "response": r.json()}
+
+
+async def remove_label(
+    owner: str, repo: str, issue_number: Union[int, str], label: str
+) -> dict:
+    """Remove a label of an issue."""
+    url = f"{base_url()}/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}"
+    async with httpx.AsyncClient() as client:
+        r = await client.delete(url, headers=headers())
+        return {"status_code": r.status_code, "response": r.json()}

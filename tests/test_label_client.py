@@ -8,6 +8,7 @@ from httpx import Response
 from ghs.base import base_url
 from ghs.label_client import (
     add_labels,
+    remove_label,
     org_repos_default_labels_create,
     org_repos_labels,
     org_repos_labels_create,
@@ -222,3 +223,17 @@ async def test_add_labels(respx_mock, repo_labels_data) -> None:
             owner, repo, issue_number, [label.get("name") for label in repo_labels_data]
         )
         assert len(repo_labels_data) == len(list(response.get("response")))
+
+
+async def test_rm_label(respx_mock, repo_labels_data) -> None:
+    with respx.mock(base_url=base_url()) as respx_mock:
+        data = [repo_labels_data[0]]
+        owner = "kytos-ng"
+        repo = "flow_manager"
+        label = "some_label"
+        issue_number = 10
+        respx_mock.delete(
+            f"/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}"
+        ).mock(return_value=Response(200, json=data))
+        response = await remove_label(owner, repo, issue_number, label)
+        assert len(data) == len(list(response.get("response")))
